@@ -23,21 +23,24 @@ except ModuleNotFoundError:
 	print("Failed to display a splash screen.")
 
 if platform == "linux" or platform == "linux2":
-	auto_path = Path("$HOME/.minecraft")
+  if os.getenv("XDG_DATA_HOME"):
+    auto_path = Path(os.getenv("XDG_DATA_HOME"), "Hytale/UserData")
+  else:
+    auto_path = Path("$HOME/.local/share/Hytale/UserData")
 
 elif platform == "darwin":
-	auto_path = Path("$HOME/Library/Application Support/minecraft")
+	auto_path = Path("$HOME/Library/Application Support/Hytale/UserData")
 
 elif platform == "win32":
-	auto_path = Path('C:/Users', os.getlogin(), 'AppData/Roaming/.minecraft')
+	auto_path = Path('C:/Users', os.getlogin(), 'AppData/Roaming/Hytale/UserData')
 else:
 	print("Could not determine platform guessing path")
 	from random import randint
 	
 	auto_path = [
-		Path("$HOME/.minecraft"),
-		Path("$HOME/Library/Application Support/minecraft"),
-		Path('C:/Users', os.getlogin(), 'AppData/Roaming/.minecraft'),
+		Path("$HOME/Hytale/UserData"),
+		Path("$HOME/Library/Application Support/Hytale/UserData"),
+		Path('C:/Users', os.getlogin(), 'AppData/Roaming/Hytale/UserData'),
 	][randint(0, 2)]
 
 
@@ -282,7 +285,7 @@ def run():
 		insert("No mode selected, please select mode!")
 		return
 	elif scan_mode == 1:
-		default_logs_path = Path(auto_path, 'logs')
+		default_logs_path = Path(auto_path, 'Logs')
 		if default_logs_path.exists():
 			insert(f"Automatically detected logs path: `{default_logs_path}` on {platform}.")
 			start_new_thread(count_playtimes_tread, tuple(), {"paths": default_logs_path, "mode": scan_mode})
